@@ -1,0 +1,18 @@
+# Operating System Files
+.DS_Store
+Thumbs.db
+*.swp
+*.bak
+*.tmp
+
+# Working files & patched images
+*.backup
+ramdiskpatched4AVD.img
+ramdisk.img
+initramfs.img
+
+# APK and extracted native binaries
+Apps/*.apk
+!Apps/.gitkeep
+ksud
+lib/
