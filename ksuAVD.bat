@@ -191,6 +191,9 @@ set "SDK_DIR="
 if defined ANDROID_HOME if exist "%ANDROID_HOME%" set "SDK_DIR=%ANDROID_HOME%"
 if not defined SDK_DIR if defined ANDROID_SDK_ROOT if exist "%ANDROID_SDK_ROOT%" set "SDK_DIR=%ANDROID_SDK_ROOT%"
 if not defined SDK_DIR if exist "%LOCALAPPDATA%\Android\Sdk" set "SDK_DIR=%LOCALAPPDATA%\Android\Sdk"
+if defined SDK_DIR (
+    for %%a in ("!SDK_DIR!") do set "SDK_DIR=%%~fa"
+)
 exit /b 0
 
 :FindADB
@@ -349,9 +352,14 @@ if defined SDK_DIR (
     )
 )
 
-REM Search AVD instances in .android/avd or ANDROID_AVD_HOME
+REM Search AVD instances in .android/avd or ANDROID_AVD_HOME or ANDROID_SDK_HOME
 set "AVD_SEARCH_DIR=%USERPROFILE%\.android\avd"
 if defined ANDROID_AVD_HOME if exist "%ANDROID_AVD_HOME%" set "AVD_SEARCH_DIR=%ANDROID_AVD_HOME%"
+if defined ANDROID_SDK_HOME (
+    for %%a in ("%ANDROID_SDK_HOME%") do (
+        if exist "%%~fa\.android\avd" set "AVD_SEARCH_DIR=%%~fa\.android\avd"
+    )
+)
 
 if exist "%AVD_SEARCH_DIR%" (
     for /f "delims=" %%f in ('dir "%AVD_SEARCH_DIR%\ramdisk*.img" /s /b /a-d 2^>nul') do (

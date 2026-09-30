@@ -269,7 +269,7 @@ show_help_and_images() {
     FOUND_COUNT=0
 
     if [ -n "$SDK_DIR" ] && [ -d "$SDK_DIR/system-images" ]; then
-        while IFS= read -r f; do
+        find "$SDK_DIR/system-images" -name "ramdisk*.img" 2>/dev/null | while IFS= read -r f; do
             if [ -n "$f" ]; then
                 FOUND_COUNT=$((FOUND_COUNT + 1))
                 REL_PATH="${f#$SDK_DIR/}"
@@ -277,23 +277,25 @@ show_help_and_images() {
                 echo "    ./ksuAVD.sh \"$REL_PATH\""
                 echo ""
             fi
-        done < <(find "$SDK_DIR/system-images" -name "ramdisk*.img" 2>/dev/null || true)
+        done
     fi
 
     AVD_DIR="$HOME/.android/avd"
     if [ -n "$ANDROID_AVD_HOME" ] && [ -d "$ANDROID_AVD_HOME" ]; then
         AVD_DIR="$ANDROID_AVD_HOME"
+    elif [ -n "$ANDROID_SDK_HOME" ] && [ -d "$ANDROID_SDK_HOME/.android/avd" ]; then
+        AVD_DIR="$ANDROID_SDK_HOME/.android/avd"
     fi
 
     if [ -d "$AVD_DIR" ]; then
-        while IFS= read -r f; do
+        find "$AVD_DIR" -name "ramdisk*.img" 2>/dev/null | while IFS= read -r f; do
             if [ -n "$f" ]; then
                 FOUND_COUNT=$((FOUND_COUNT + 1))
                 echo "  Example $FOUND_COUNT (AVD Instance):"
                 echo "    ./ksuAVD.sh \"$f\""
                 echo ""
             fi
-        done < <(find "$AVD_DIR" -name "ramdisk*.img" 2>/dev/null || true)
+        done
     fi
 
     if [ "$FOUND_COUNT" -eq 0 ]; then
